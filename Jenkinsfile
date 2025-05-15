@@ -3,20 +3,14 @@ node {
         checkout scm
     }
 
-    stage('Build') {
+    stage('Build & Test') {
         docker.image('python:3.10-slim').inside('-p 5000:5000') {
             sh '''
                 python -m venv venv
                 . venv/bin/activate
                 pip install --upgrade pip
-            '''
-        }
-    }
 
-    stage('Test') {
-        docker.image('python:3.10-slim').inside('-p 5000:5000') {
-            sh '''
-                . venv/bin/activate
+                # Jalankan test
                 ./jenkins/scripts/test.sh
             '''
         }
