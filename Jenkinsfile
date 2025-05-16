@@ -32,11 +32,14 @@ pipeline {
         stage('Deliver') {
             agent {
                 docker {
-                    image 'cdrx/pyinstaller-linux:python2'
+                    image 'python:2-alpine'
                 }
             }
             steps {
-                sh 'pyinstaller --onefile sources/add2vals.py'
+                sh '''
+                    pip install --no-cache-dir pyinstaller
+                    pyinstaller --onefile sources/add2vals.py
+                '''
             }
             post {
                 success {
