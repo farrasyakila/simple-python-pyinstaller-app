@@ -1,25 +1,26 @@
 node {
-    stage('Build') {
-        docker.image('python:2-alpine').inside {
-            sh 'python -m py_compile sources/add2vals.py sources/calc.py'
+    ws("/home/jenkins/workspace") { // atau path lain yang tersedia di host/container
+        stage('Build') {
+            docker.image('python:2-alpine').inside {
+                sh 'python -m py_compile sources/add2vals.py sources/calc.py'
+            }
         }
-    }
 
-    stage('Test') {
-        docker.image('qnib/pytest').inside {
-            try {
-                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
-            } finally {
-                junit 'test-reports/results.xml'
+        stage('Test') {
+            docker.image('qnib/pytest').inside {
+                try {
+                    sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+                } finally {
+                    junit 'test-reports/results.xml'
+                }
+            }
+        }
+
+        stage('Deliver') {
+            docker.image('cdrx/pyinstaller-linux:python2').inside {
+                sh 'pyinstaller --onefile sources/add2vals.py'
+                archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
             }
         }
     }
-
-    stage('Deliver') {
-        docker.image('cdrx/pyinstaller-linux:python2').inside {
-            sh 'pyinstaller --onefile sources/add2vals.py'
-            archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
-        }
-    }
 }
-
