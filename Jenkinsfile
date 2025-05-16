@@ -37,6 +37,7 @@ pipeline {
             }
             steps {
                 sh '''
+                    apk add --no-cache gcc musl-dev libffi-dev libc-dev python2-dev py-pip
                     pip install --no-cache-dir pyinstaller==3.6
                     pyinstaller --onefile sources/add2vals.py
                 '''
