@@ -37,7 +37,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    pip install --no-cache-dir pyinstaller
+                    pip install --no-cache-dir pyinstaller==3.6
                     pyinstaller --onefile sources/add2vals.py
                 '''
             }
