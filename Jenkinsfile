@@ -33,6 +33,7 @@ pipeline {
             agent {
                 docker {
                     image 'python:2-alpine'
+                    args '--user root'
                 }
             }
             steps {
